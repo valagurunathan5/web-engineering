@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Movie Ticket Booking</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #eef2f3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header, footer {
+      background: #2c3e50;
+      color: #fff;
+      width: 100%;
+      text-align: center;
+      padding: 15px 0;
+    }
+
+    .container {
+      background: #fff;
+      margin: 40px auto;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: 360px;
+      width: 90%;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    input, select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    input[type="submit"] {
+      background: #2980b9;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    input[type="submit"]:hover {
+      background: #1c5980;
+    }
+
+    #availability {
+      color: #e74c3c;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    footer {
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+<header>Movie Ticket Booking</header>
+
+<div class="container">
+  <form onsubmit="return validateBookingForm()">
+    <label for="movie">Movie</label>
+    <select id="movie" name="movie" onchange="updateAvailability()" required>
+      <option value="">-- Select a Movie --</option>
+      <option>Good Bad Ugly</option>
+      <option>Leo</option>
+      <option>Retro</option>
+      <option>Veera Dheera Sooran</option>
+      <option>Alappuzha Gymkhana</option>
+    </select>
+
+    <div id="availability"></div>
+
+    <label for="date">Date</label>
+    <input type="date" id="date" name="date" required>
+
+    <label for="tickets">Tickets</label>
+    <input type="number" id="tickets" name="tickets" min="1" max="10" required>
+
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required>
+
+    <input type="submit" value="Book Now">
+  </form>
+</div>
+
+<footer>&copy; 2025 Movie Booking. All Rights Reserved.</footer>
+
+<script>
+  // Seat availability for each movie
+  var availableSeats = {
+    "Good Bad Ugly": 50,
+    "Leo": 80,
+    "Retro": 50,
+    "Veera Dheera Sooran": 70,
+    "Alappuzha Gymkhana": 90
+  };
+
+  function updateAvailability() {
+    var selectedMovie = document.getElementById("movie").value;
+    var availabilityDiv = document.getElementById("availability");
+
+    if (selectedMovie !== "") {
+      availabilityDiv.innerHTML = "Seats Available: " + availableSeats[selectedMovie];
+    } else {
+      availabilityDiv.innerHTML = "";
+    }
+  }
+
+  function validateBookingForm() {
+    var name = document.getElementById("name").value.trim();
+    var email = document.getElementById("email").value.trim();
+    var tickets = parseInt(document.getElementById("tickets").value);
+    var date = document.getElementById("date").value;
+    var movie = document.getElementById("movie").value;
+
+    if (name.length < 3) {
+      alert("Name must be at least 3 characters long.");
+      return false;
+    }
+
+    var emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+    if (!email.match(emailPattern)) {
+      alert("Enter a valid email address.");
+      return false;
+    }
+
+    if (tickets <= 0 || tickets > 10) {
+      alert("You can book between 1 to 10 tickets only.");
+      return false;
+    }
+
+    if (date === "") {
+      alert("Please select a valid date.");
+      return false;
+    }
+
+    if (movie === "") {
+      alert("Please select a movie.");
+      return false;
+    }
+
+    if (tickets > availableSeats[movie]) {
+      alert("Not enough seats available! Only " + availableSeats[movie] + " left.");
+      return false;
+    }
+
+    availableSeats[movie] -= tickets;
+    alert("Booking Successful! Enjoy your movie 🎬");
+    updateAvailability(); // Update availability after booking
+    return false; // Prevent form submission to stay on the page
+  }
+</script>
+
+</body>
+</html>
